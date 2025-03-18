@@ -1,0 +1,36 @@
+{
+  "name": "@doctor/log",
+  "version": "0.1.0",
+  "exports": {
+    "./app": "./src/app.ts",
+    "./lib": "./src/lib.ts",
+    "./types": "./src/types.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1"
+  },
+  "exclude": ["**/.*"],
+  "tasks": {
+    "test": "ENV_NAME=6 deno test -E --unstable-temporal --doc",
+    "ok": "deno fmt && deno lint && deno task test"
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"],
+      "include": [
+        "camelcase",
+        "explicit-function-return-type",
+        "explicit-module-boundary-types",
+        "no-console",
+        "no-eval",
+        "no-inferrable-types",
+        "no-sparse-arrays",
+        "no-sync-fn-in-async-fn",
+        "no-throw-literal",
+        "prefer-ascii",
+        "single-var-declarator",
+        "verbatim-module-syntax"
+      ]
+    }
+  }
+}
