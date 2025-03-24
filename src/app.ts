@@ -49,7 +49,7 @@ import { LogLevel, type Terminal } from "./types.ts";
  * ```
  */
 export const terminal: Terminal = await setLevel(
-  "MAIN_LOG_LEVEL",
+  "LOG_LEVEL",
   LogLevel.INFO,
   {
     async critical(x): Promise<void> {

@@ -32,7 +32,7 @@ export interface Terminal {
  * terminal via the environment variables. Values greater than the log level set
  * will be excluded.
  * ```
- * MAIN_LOG_LEVEL=3
+ * LOG_LEVEL=3
  * ```
  */
 export const enum LogLevel {

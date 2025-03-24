@@ -17,7 +17,7 @@ time of writing this.
 
 ### Application Usage
 
-`MAIN_LOG_LEVEL=4 deno run -E='MAIN_LOG_LEVEL' --unstable-temporal main.ts`
+`LOG_LEVEL=4 deno run -E='LOG_LEVEL' --unstable-temporal main.ts`
 
 ```ts
 import { terminal } from "@doctor/log/app";
