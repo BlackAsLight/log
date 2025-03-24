@@ -56,26 +56,30 @@ import { LogLevel, type Terminal } from "./types.ts";
  */
 export async function createTerminal(
   name: string,
-  env?: string,
+  env: string,
 ): Promise<Terminal> {
-  return await setLevel(env ?? name, LogLevel.NONE, {
-    async critical(x): Promise<void> {
-      await write("[CRITICAL] [" + name + "] ", x);
+  return await setLevel(
+    env,
+    LogLevel.NONE,
+    {
+      async critical(x): Promise<void> {
+        await write("[CRITICAL] [" + name + "] ", x);
+      },
+      async error(x): Promise<void> {
+        await write("[ERROR] [" + name + "] ", x);
+      },
+      async warn(x): Promise<void> {
+        await write("[WARN] [" + name + "] ", x);
+      },
+      async info(x): Promise<void> {
+        await write("[INFO] [" + name + "] ", x);
+      },
+      async debug(x): Promise<void> {
+        await write("[DEBUG] [" + name + "] ", x);
+      },
+      async trace(x): Promise<void> {
+        await write("[TRACE] [" + name + "] ", x);
+      },
     },
-    async error(x): Promise<void> {
-      await write("[ERROR] [" + name + "] ", x);
-    },
-    async warn(x): Promise<void> {
-      await write("[WARN] [" + name + "] ", x);
-    },
-    async info(x): Promise<void> {
-      await write("[INFO] [" + name + "] ", x);
-    },
-    async debug(x): Promise<void> {
-      await write("[DEBUG] [" + name + "] ", x);
-    },
-    async trace(x): Promise<void> {
-      await write("[TRACE] [" + name + "] ", x);
-    },
-  });
+  );
 }
