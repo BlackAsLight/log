@@ -1,12 +1,28 @@
 // deno-lint-ignore-file no-fallthrough
 import { LogLevel, type Message, type Terminal } from "./types.ts";
 
+const stdout = "Deno" in globalThis
+  // deno-lint-ignore no-explicit-any
+  ? (globalThis as any).Deno.stdout
+  // deno-lint-ignore no-explicit-any
+  : (globalThis as any).process.stdout;
+
 async function getLevel(name: string, fallback: LogLevel): Promise<LogLevel> {
-  if (
-    (await Deno.permissions.query({ name: "env", variable: name })).state !==
-      "granted"
-  ) return fallback;
-  const level = Number(Deno.env.get(name));
+  let level: LogLevel;
+  if ("Deno" in globalThis) {
+    // deno-lint-ignore no-explicit-any
+    const state = (await (globalThis as any)
+      .Deno
+      .permissions
+      .query({ name: "env", variable: name }))
+      .state;
+    if (state !== "granted") return fallback;
+    // deno-lint-ignore no-explicit-any
+    level = Number((globalThis as any).Deno.env.get(name));
+  } else if ("process" in globalThis) {
+    // deno-lint-ignore no-explicit-any
+    level = Number((globalThis as any).process.env[name]);
+  } else return fallback;
   if (Number.isNaN(level) || level < LogLevel.NONE || LogLevel.TRACE < level) {
     return fallback;
   }
@@ -45,11 +61,12 @@ export async function write(
   prefix: string,
   x: Message,
 ): Promise<void> {
-  const buffer = encoder.encode(
-    "~[" + Temporal.Now.instant().toString() + "] " + prefix +
-      await stringify(x) + "\n",
-  );
-  for (let i = 0; i < buffer.length;) {
-    i += await Deno.stdout.write(buffer.subarray(i));
-  }
+  await stdout.write(encoder.encode(
+    "~[" +
+      Temporal.Now.instant().toString() +
+      "] " +
+      prefix +
+      await stringify(x) +
+      "\n",
+  ));
 }
