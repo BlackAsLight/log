@@ -3,18 +3,18 @@
  * logs.
  * - This package writes directly to stdout so to save the logs, the application
  * developer simply needs to pipe the output to a file or process.
- * - The log level is set via an environment variable. As the library developer,
- you get to decide what the variable is called.
- * - If no environment variable is set by the application developer; it is set
- to an invalid value; or permissions to read the variable is not granted from
- the start; the log level is set to `none`.
+ * - The log level is set via an environment variable or meta tag. As the
+ * library developer, you get to decide what the variable is called.
+ * - If no environment variable or meta tag is set; it is set to an invalid
+ * value; or permissions to read the variable is not granted from the start;
+ * the log level is set to `none`.
  * - Optional chaining syntax `?.` is used to handle logs that will be excluded.
  * This allows the values that would be passed into the log function to be
  * entirely skipped over instead of calculating it and then discarding the
  * result. It also removes the need for having separate handling for expensive
  * to compute logs.
- * - This package uses the Temporal API so `--unstable-temporal` is required at
- * the time of writing this.
+ * - This package makes optional use of the `Temporal` API if it is available
+ * for its timestamps, otherwise falls back to `Date`.
  *
  * [!IMPORTANT]
  * This module is to be used by library developers and not application
@@ -32,7 +32,7 @@
  * @module
  */
 
-import { setLevel, write } from "./_common.ts";
+import { setLevel, stringify as s, timeStamp as t, write } from "./_common.ts";
 import { LogLevel, type Terminal } from "./types.ts";
 
 /**
@@ -63,22 +63,22 @@ export async function createTerminal(
     LogLevel.NONE,
     {
       async critical(x): Promise<void> {
-        await write("[CRITICAL] [" + name + "] ", x);
+        await write("~[" + t() + "] [CRITICAL] [" + name + "] " + await s(x));
       },
       async error(x): Promise<void> {
-        await write("[ERROR] [" + name + "] ", x);
+        await write("~[" + t() + "] [ERROR] [" + name + "] " + await s(x));
       },
       async warn(x): Promise<void> {
-        await write("[WARN] [" + name + "] ", x);
+        await write("~[" + t() + "] [WARN] [" + name + "] " + await s(x));
       },
       async info(x): Promise<void> {
-        await write("[INFO] [" + name + "] ", x);
+        await write("~[" + t() + "] [INFO] [" + name + "] " + await s(x));
       },
       async debug(x): Promise<void> {
-        await write("[DEBUG] [" + name + "] ", x);
+        await write("~[" + t() + "] [DEBUG] [" + name + "] " + await s(x));
       },
       async trace(x): Promise<void> {
-        await write("[TRACE] [" + name + "] ", x);
+        await write("~[" + t() + "] [TRACE] [" + name + "] " + await s(x));
       },
     },
   );

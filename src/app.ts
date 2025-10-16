@@ -3,19 +3,19 @@
  * logs.
  * - This package writes directly to stdout so to save the logs, simply pipe the
  * output to a file or another process.
- * - To set the log level, set the environment variable `MAIN_LOG_LEVEL` to a
+ * - To set the log level, set the environment variable `LOG_LEVEL` to a
  * number of {@link LogLevel}, and all levels greater than the log level will be
  * excluded.
- * - If no environment variable is set; it is set to an invalid value; or
- * permissions to read the variable is not granted from the start; the log level
- * is set to `info`.
+ * - If no environment variable or meta tag is set; it is set to an invalid
+ * value; or permissions to read the variable is not granted from the start;
+ * the log level is set to `info`.
  * - Optional chaining syntax `?.` is used to handle logs that will be excluded.
  * This allows the values that would be passed into the log function to be
  * entirely skipped over instead of calculating it and then discarding the
  * result. It also removes the need for having separate handling for expensive
  * to compute logs.
- * - This package uses the Temporal API so `--unstable-temporal` is required at
- * the time of writing this.
+ * - This package makes optional use of the `Temporal` API if it is available
+ * for its timestamps, otherwise falls back to `Date`.
  *
  * [!IMPORTANT]
  * This module is to be used by application developers and not library
@@ -32,7 +32,7 @@
  * @module
  */
 
-import { setLevel, write } from "./_common.ts";
+import { setLevel, stringify as s, timeStamp as t, write } from "./_common.ts";
 import { LogLevel, type Terminal } from "./types.ts";
 
 /**
@@ -53,22 +53,22 @@ export const terminal: Terminal = await setLevel(
   LogLevel.INFO,
   {
     async critical(x): Promise<void> {
-      await write("[CRITICAL] ", x);
+      await write("~[" + t() + "] [CRITICAL] " + await s(x));
     },
     async error(x): Promise<void> {
-      await write("[ERROR] ", x);
+      await write("~[" + t() + "] [ERROR] " + await s(x));
     },
     async warn(x): Promise<void> {
-      await write("[WARN] ", x);
+      await write("~[" + t() + "] [WARN] " + await s(x));
     },
     async info(x): Promise<void> {
-      await write("[INFO] ", x);
+      await write("~[" + t() + "] [INFO] " + await s(x));
     },
     async debug(x): Promise<void> {
-      await write("[DEBUG] ", x);
+      await write("~[" + t() + "] [DEBUG] " + await s(x));
     },
     async trace(x): Promise<void> {
-      await write("[TRACE] ", x);
+      await write("~[" + t() + "] [TRACE] " + await s(x));
     },
   },
 );

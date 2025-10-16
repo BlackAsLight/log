@@ -1,6 +1,6 @@
 {
   "name": "@doctor/log",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "exports": {
     "./app": "./src/app.ts",
     "./lib": "./src/lib.ts",
